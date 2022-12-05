@@ -50,7 +50,7 @@ public class CargoStacks {
 	 */
 	public void execute9000(String[] commands) {
 		for (String s : commands) {
-			String[] params = s.split("[ \\[\\]]");
+			String[] params = s.split(" ");
 			int moveCount = Integer.parseInt(params[1]);
 			int fromIdx = Integer.parseInt(params[3]) - 1;
 			int toIdx = Integer.parseInt(params[5]) - 1;
@@ -63,7 +63,7 @@ public class CargoStacks {
 	
 	public void execute9001(String[] commands) {
 		for (String s : commands) {
-			String[] params = s.split("[ \\[\\]]");
+			String[] params = s.split(" ");
 			int moveCount = Integer.parseInt(params[1]);
 			int fromIdx = Integer.parseInt(params[3]) - 1;
 			int toIdx = Integer.parseInt(params[5]) - 1;
