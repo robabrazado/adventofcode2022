@@ -28,7 +28,7 @@ public class Datastream {
 		}
 		if (!isStart) {
 			// This shouldn't happen
-			throw new RuntimeException("No start-of-message packet found");
+			throw new RuntimeException("No packet found");
 		}
 		return startAt;
 	}
