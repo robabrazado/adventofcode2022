@@ -14,11 +14,15 @@ public class Day07Cli {
 		String[] inputLines = InputGetter.getInputLines(7);
 		
 		Node root = Node.createTree(inputLines);
-//		outputAllDirSizes(root); // Diagnostic only
-		System.out.println();
 		
 		List<Node> dirs = new ArrayList<Node>();
 		buildDirList(root, dirs);
+		
+		// Just diagnostic output
+//		for (Node dir : dirs) {
+//			System.out.println(dir.getName() + " " + dir.getRecursiveSize());
+//		}
+//		System.out.println();
 		
 		System.out.println("Part 1");
 		int totalUpTo100k = 0;
@@ -42,14 +46,6 @@ public class Day07Cli {
 		}
 		System.out.println(dirs.get(deleteIdx).getRecursiveSize());
 
-	}
-	
-	private static void outputAllDirSizes(Node node) {
-		Node[] subdirs = node.getSubdirectories();
-		for (Node subdir : subdirs) {
-			outputAllDirSizes(subdir);
-		}
-		System.out.println(node.getName() + " " + String.valueOf(node.getRecursiveSize()));
 	}
 	
 	private static void buildDirList(Node topDir, List<Node> dirs) {
