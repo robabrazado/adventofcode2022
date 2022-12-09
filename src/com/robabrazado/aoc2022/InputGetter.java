@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class InputGetter {
-	private static final String CACHE_FOLDER_PATH = "C:\\Users\\rob\\Documents\\Eclipse Projects\\Advent of Code 2022\\inputs_cache";
+	public static final String CACHE_FOLDER_PATH = "C:\\Users\\rob\\Documents\\Eclipse Projects\\Advent of Code 2022\\inputs_cache";
 	
 	public static String[] getInputLines(int dayNum) {
 		return getInputLines(dayNum, 0);
@@ -24,9 +24,7 @@ public abstract class InputGetter {
 		}
 		
 		File cacheDir = new File(CACHE_FOLDER_PATH);
-		String cacheFilename = String.format("aoc2022-day%02d", dayNum) +
-				((testNum == 0) ? "-input" : "-test" + String.valueOf(testNum)) +
-				".txt";
+		String cacheFilename = getFilename(dayNum, testNum);
 		File cacheFile = new File(cacheDir, cacheFilename);
 		
 		if (!cacheFile.exists()) {
@@ -52,6 +50,16 @@ public abstract class InputGetter {
 		}
 		
 		return retVal.toArray(new String[retVal.size()]);
+	}
+	
+	public static String getFilename(int dayNum) {
+		return getFilename(dayNum, 0);
+	}
+	
+	public static String getFilename(int dayNum, int testNum) {
+		return String.format("aoc2022-day%02d", dayNum) +
+			((testNum == 0) ? "-input" : "-test" + String.valueOf(testNum)) +
+			".txt";
 	}
 	
 }
