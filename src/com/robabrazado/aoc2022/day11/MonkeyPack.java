@@ -1,5 +1,6 @@
 package com.robabrazado.aoc2022.day11;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -25,9 +26,9 @@ public class MonkeyPack {
 		return;
 	}
 	
-	public void doTurn(boolean divideWorry) {
+	public void doTurn(boolean isPart1) {
 		for (Monkey m : this.monkeys) {
-			m.doRound(this.monkeys);
+			m.doRound(this.monkeys, isPart1);
 		}
 		return;
 	}
@@ -42,7 +43,20 @@ public class MonkeyPack {
 		return arrCopy[0].getInspectionCount() * arrCopy[1].getInspectionCount();
 	}
 	
-	public int part2() {
-		throw new RuntimeException("Not yet implemented");
+	public BigInteger part2() {
+if (true) {
+	throw new RuntimeException("Not ready");
+}
+		for (int i = 0; i < 10000; i++) {
+			System.out.print('.');
+			if ((i + 1) % 100 == 0) {
+				System.out.println();
+			}
+			this.doTurn(false);
+		}
+		
+		Monkey[] arrCopy = Arrays.copyOf(this.monkeys, this.monkeys.length);
+		Arrays.sort(arrCopy, Comparator.comparing(Monkey::getInspectionCount).reversed());
+		return BigInteger.valueOf(arrCopy[0].getInspectionCount()).multiply(BigInteger.valueOf(arrCopy[1].getInspectionCount()));
 	}
 }

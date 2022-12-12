@@ -1,5 +1,6 @@
 package com.robabrazado.aoc2022.day11;
 
+import java.math.BigInteger;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Queue;
@@ -14,11 +15,14 @@ public class Monkey {
 			"If false: "
 	};
 	
+	private static final BigInteger BIG_INT_THREE = BigInteger.valueOf(3);
+	
 	private int expectedIndex;
-	private Queue<Integer> items = new ArrayDeque<Integer>();
+	private Queue<BigInteger> items = new ArrayDeque<BigInteger>();
 	private ItemInspector itemInspector;
 	private ThrowFinder throwFinder;
 	private int inspectionCounter = 0;
+	private BigInteger divisor;
 	
 	/*
 	 * Monkey 0:
@@ -51,7 +55,7 @@ public class Monkey {
 		String[] parts = lines[1].split("[ :,]+");
 		for (int i = 2; i < parts.length; i++) {
 			String s = parts[i];
-			this.items.add(Integer.valueOf(s));
+			this.items.add(new BigInteger(s));
 		}
 		
 		// Operation
@@ -60,6 +64,7 @@ public class Monkey {
 		
 		// Test
 		int divisor = parseFinalInt(lines[3], "Test: divisible by ");
+		this.divisor = BigInteger.valueOf(divisor);
 		int throwIndexTrue = parseFinalInt(lines[4], "If true: throw to monkey ");
 		int throwIndexFalse = parseFinalInt(lines[5], "If false: throw to monkey ");
 		this.throwFinder = Monkey.createThrowFinder(divisor, throwIndexTrue, throwIndexFalse);
@@ -70,11 +75,13 @@ public class Monkey {
 		return this.expectedIndex;
 	}
 	
-	public void doRound(Monkey[] monkeys) {
+	public void doRound(Monkey[] monkeys, boolean isPart1) {
 		while (!this.items.isEmpty()) {
-			Integer oldWorry = this.items.poll();
-			Integer newWorry = this.itemInspector.inspect(oldWorry);
-			newWorry = newWorry.intValue() / 3;
+			BigInteger oldWorry = this.items.poll();
+			BigInteger newWorry = this.itemInspector.inspect(oldWorry);
+			if (isPart1) {
+				newWorry = newWorry.divide(BIG_INT_THREE);
+			}
 			int recipientIndex = this.throwFinder.findTarget(newWorry);
 			monkeys[recipientIndex].catchItem(newWorry);
 			this.inspectionCounter++;
@@ -85,7 +92,7 @@ public class Monkey {
 		return this.inspectionCounter;
 	}
 	
-	private void catchItem(Integer newWorry) {
+	private void catchItem(BigInteger newWorry) {
 		this.items.add(newWorry);
 		return;
 	}
@@ -102,12 +109,12 @@ public class Monkey {
 		try {
 			switch (op) {
 			case "+":
-				return (Integer oldWorry) -> oldWorry.intValue() + Integer.valueOf(arg);
+				return (BigInteger oldWorry) -> oldWorry.add(new BigInteger(arg));
 			case "*":
 				if (arg.equals("old")) {
-					return (Integer oldWorry) -> oldWorry.intValue() * oldWorry.intValue();
+					return (BigInteger oldWorry) -> oldWorry.pow(2);
 				} else {
-					return (Integer oldWorry) -> oldWorry.intValue() * Integer.valueOf(arg);
+					return (BigInteger oldWorry) -> oldWorry.multiply(new BigInteger(arg));
 				}
 			default:
 				throw new IllegalArgumentException("Unrecognized operator: " + op);
@@ -118,18 +125,18 @@ public class Monkey {
 	}
 	
 	private static ThrowFinder createThrowFinder(int divisor, int trueMonkeyIndex, int falseMonkeyIndex) {
-		return (Integer newWorry) -> (newWorry.intValue() % divisor == 0) ? trueMonkeyIndex : falseMonkeyIndex;
+		return (BigInteger newWorry) -> newWorry.mod(BigInteger.valueOf(divisor)).equals(BigInteger.ZERO) ? trueMonkeyIndex : falseMonkeyIndex;
 	}
 	
 	
 	
 	@FunctionalInterface
 	public interface ItemInspector {
-		public Integer inspect(Integer oldWorry);
+		public BigInteger inspect(BigInteger oldWorry);
 	}
 	
 	@FunctionalInterface
 	public interface ThrowFinder {
-		public int findTarget(Integer newWorry);
+		public int findTarget(BigInteger newWorry);
 	}
 }

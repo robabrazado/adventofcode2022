@@ -8,12 +8,14 @@ public abstract class Day11Cli {
 //		String[] inputLines = InputGetter.getInputLines(11, 1);
 		String[] inputLines = InputGetter.getInputLines(11);
 		
-		MonkeyPack pack = new MonkeyPack(inputLines);
 		
 		System.out.println("Part 1");
+		MonkeyPack pack = new MonkeyPack(inputLines);
 		System.out.println(pack.part1());
 		System.out.println();
 		
+		System.out.println("Part 2");
+		System.out.println(pack.part2());
 		
 		return;
 	}
