@@ -11,6 +11,7 @@ public class HeightMap {
 	
 	private List<HeightNode> allNodes;
 	private HeightNode startNode;
+	private HeightNode endNode;
 	
 	public HeightMap(String[] inputLines) {
 		// Initialize node collection, find start node, and create grid
@@ -24,6 +25,8 @@ public class HeightMap {
 				nodeList.add(n);
 				if (n.isStart) {
 					this.startNode = n;
+				} else if (n.isEnd) {
+					this.endNode = n;
 				}
 			}
 			grid.add(row);
@@ -44,8 +47,7 @@ public class HeightMap {
 					int nRow = dir.offsetRow(row);
 					int nCol = dir.offsetCol(col);
 					if (nRow >= 0 && nRow < grid.size()
-							&& nCol >= 0 && nCol < grid.get(nRow).size()
-							&& grid.get(nRow).get(nCol).height <= me.height + 1) {
+							&& nCol >= 0 && nCol < grid.get(nRow).size()) {
 						me.neighborMap.put(dir, grid.get(nRow).get(nCol));
 					}
 				}
@@ -61,6 +63,7 @@ public class HeightMap {
 		List<HeightNode> unvisitedNodes = new ArrayList<HeightNode>(this.allNodes);
 		Comparator<HeightNode> nodeSorter = Comparator.comparing(HeightNode::getDistance);
 		HeightNode currNode;
+		this.startNode.distanceFromStart = 0;
 		
 		while (!unvisitedNodes.isEmpty() && pathLength == Integer.MAX_VALUE) {
 			Collections.sort(unvisitedNodes, nodeSorter);
@@ -69,7 +72,9 @@ public class HeightMap {
 			if (!currNode.isEnd) {
 				int newDistance = currNode.getDistance() + 1;
 				for (HeightNode neighbor : currNode.neighborMap.values()) {
-					if (unvisitedNodes.contains(neighbor) && neighbor.getDistance() > newDistance) {
+					if (unvisitedNodes.contains(neighbor) &&
+							neighbor.height <= currNode.height + 1 &&
+							neighbor.getDistance() > newDistance) {
 						neighbor.distanceFromStart = newDistance;
 					}
 				}
@@ -81,6 +86,39 @@ public class HeightMap {
 		
 		if (pathLength == Integer.MAX_VALUE) {
 			throw new RuntimeException("No path found to endpoint");
+		}
+		return pathLength;
+	}
+	
+	public int part2() {
+		// Path starts at "end node" and ends at closest elevation "a" node
+		int pathLength = Integer.MAX_VALUE;
+		List<HeightNode> unvisitedNodes = new ArrayList<HeightNode>(this.allNodes);
+		Comparator<HeightNode> nodeSorter = Comparator.comparing(HeightNode::getDistance);
+		HeightNode currNode;
+		this.endNode.distanceFromStart = 0;
+		
+		while (!unvisitedNodes.isEmpty() && pathLength == Integer.MAX_VALUE) {
+			Collections.sort(unvisitedNodes, nodeSorter);
+			currNode = unvisitedNodes.get(0);
+			unvisitedNodes.remove(0);
+			if (currNode.height > 1) {
+				int newDistance = currNode.getDistance() + 1;
+				for (HeightNode neighbor : currNode.neighborMap.values()) {
+					if (unvisitedNodes.contains(neighbor) &&
+							neighbor.height >= currNode.height - 1 &&  // Invert height requirement
+							neighbor.getDistance() > newDistance) {
+						neighbor.distanceFromStart = newDistance;
+					}
+				}
+			} else {
+				// Current node is endpoint
+				pathLength = currNode.getDistance();
+			}
+		}
+		
+		if (pathLength == Integer.MAX_VALUE) {
+			throw new RuntimeException("No path found");
 		}
 		return pathLength;
 	}
@@ -126,7 +164,6 @@ public class HeightMap {
 			} else if (c == 'S') {
 				this.height = 1;
 				this.isStart = true;
-				this.distanceFromStart = 0;
 			} else if (c == 'E') {
 				this.height = 26;
 				this.isEnd = true;

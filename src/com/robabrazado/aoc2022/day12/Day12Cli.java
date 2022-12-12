@@ -8,11 +8,15 @@ public abstract class Day12Cli {
 //		String[] inputLines = InputGetter.getInputLines(12, 1);
 		String[] inputLines = InputGetter.getInputLines(12);
 		
+		
 		System.out.println("Part 1");
 		HeightMap heightMap = new HeightMap(inputLines);
 		System.out.println(heightMap.part1());
 		System.out.println();
 		
+		System.out.println("Part 2");
+		heightMap = new HeightMap(inputLines);
+		System.out.println(heightMap.part2());
 		
 	}
 
