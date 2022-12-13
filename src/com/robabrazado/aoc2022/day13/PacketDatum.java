@@ -3,10 +3,13 @@ package com.robabrazado.aoc2022.day13;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.lang.model.element.ModuleElement.DirectiveVisitor;
 
 public class PacketDatum implements Comparable<PacketDatum> {
 	private static final Pattern INPUT_STRING_TOKENIZER = Pattern.compile("\\[|\\]|,|[0-9]+");
@@ -151,6 +154,25 @@ public class PacketDatum implements Comparable<PacketDatum> {
 			}
 		}
 		return indexSum;
+	}
+	
+	public static int part2(String[] inputLines) {
+		PacketDatum[] dividerPackets = new PacketDatum[] {
+			new PacketDatum("[[2]]"),
+			new PacketDatum("[[6]]")
+		};
+		List<PacketDatum> packets = new ArrayList<PacketDatum>();
+		
+		for (String line : inputLines) {
+			if (!line.isBlank()) {
+				packets.add(new PacketDatum(line));
+			}
+		}
+		packets.addAll(Arrays.asList(dividerPackets));
+		
+		Collections.sort(packets);
+		
+		return (packets.indexOf(dividerPackets[0]) + 1) * (packets.indexOf(dividerPackets[1]) + 1);
 	}
 	
 	

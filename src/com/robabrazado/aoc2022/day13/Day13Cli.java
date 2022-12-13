@@ -13,6 +13,8 @@ public abstract class Day13Cli {
 		System.out.println(PacketDatum.part1(inputLines));
 		System.out.println();
 		
+		System.out.println("Part 2");
+		System.out.println(PacketDatum.part2(inputLines));
 		
 		return;
 	}
