@@ -9,8 +9,6 @@ import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.lang.model.element.ModuleElement.DirectiveVisitor;
-
 public class PacketDatum implements Comparable<PacketDatum> {
 	private static final Pattern INPUT_STRING_TOKENIZER = Pattern.compile("\\[|\\]|,|[0-9]+");
 	
