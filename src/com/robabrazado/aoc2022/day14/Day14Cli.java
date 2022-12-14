@@ -8,11 +8,15 @@ public abstract class Day14Cli {
 //		String[] inputLines = InputGetter.getInputLines(14, 1);
 		String[] inputLines = InputGetter.getInputLines(14);
 		
+		
 		System.out.println("Part 1");
 		Cave cave = new Cave(inputLines);
 		System.out.println(cave.part1());
 		System.out.println();
 
+		System.out.println("Part 2");
+		cave = new Cave(inputLines);
+		System.out.println(cave.part2());
 	}
 
 }

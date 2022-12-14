@@ -14,6 +14,7 @@ public class Cave {
 	
 	Map<Integer, BrokenRow> blockedRows; // Row (y) index -> broken row (effectively a sparse array)
 	private int bottomRow; // last row index that could possibly block
+	private int floorRow; // floor for part 2
 	private int sandCount = 0;
 	
 	public Cave(String[] inputLines) {
@@ -24,17 +25,18 @@ public class Cave {
 		List<Integer> keyList = new ArrayList<Integer>(blockedRows.keySet());
 		Collections.sort(keyList);
 		this.bottomRow = keyList.get(keyList.size() - 1);
+		this.floorRow = this.bottomRow + 2;
 		return;
 	}
 	
 	// Spawns and resolves sand until the abyss is reached
-	public void caveIn() {
-		while (this.spawnSand() == SandStatus.RESTING) {};
+	public void caveInUntilAbyss() {
+		while (this.spawnSandIntoAbyss() == SandStatus.RESTING) {};
 	}
 	
 	// New sand unit spawned and falls until it rests or reaches the abyss
 	// Abyss sand is not counted in sandCount
-	public SandStatus spawnSand() {
+	public SandStatus spawnSandIntoAbyss() {
 		SandStatus status = SandStatus.FALLING;
 		int[] sandCoords = new int[] {
 			SAND_SPAWN_X,
@@ -76,8 +78,71 @@ public class Cave {
 		return status;
 	}
 	
+	// Spawns and resolves sand until the abyss is reached
+	public void caveInUntilBlocked() {
+		while (this.spawnSandOntoFloor() != SandStatus.BLOCKED) {};
+	}
+	
+	// New sand unit spawned and falls until spawn point is blocked
+	// Blocked sand is not counted in sandCount
+	public SandStatus spawnSandOntoFloor() {
+		SandStatus status = SandStatus.FALLING;
+		int[] sandCoords = new int[] {
+			SAND_SPAWN_X,
+			SAND_SPAWN_Y
+		};
+		
+		// Short out if spawn point is blocked
+		if (this.blockedRows.containsKey(SAND_SPAWN_Y) && this.blockedRows.get(SAND_SPAWN_Y).contains(SAND_SPAWN_X)) {
+			status = SandStatus.BLOCKED;
+		} else {
+			// Move sand until it rests
+			List<Integer> blockedRowNums = new ArrayList<Integer>(this.blockedRows.keySet());
+			Collections.sort(blockedRowNums);
+			Queue<Integer> rowNumQ = new ArrayDeque<Integer>(blockedRowNums);
+			
+			// Fall until stopped
+			while (status == SandStatus.FALLING) {
+				// Automatically fall through non-blocked rows (until floor)
+				if (!rowNumQ.isEmpty()) {
+					sandCoords[1] = rowNumQ.peek() - 1;
+				} else {
+					sandCoords[1] = this.floorRow - 1;
+				}
+				
+				if (sandCoords[1] == this.floorRow - 1) { // Reached the floor
+					status = SandStatus.RESTING;
+				} else {
+					// Try to move to the next row
+					BrokenRow nextRow = this.blockedRows.get(rowNumQ.poll());
+					if (!nextRow.contains(sandCoords[0])) { // Straight down
+						sandCoords[1]++;
+					} else if (!nextRow.contains(sandCoords[0] - 1)) { // Down and left
+						sandCoords[0]--;
+						sandCoords[1]++;
+					} else if (!nextRow.contains(sandCoords[0] + 1)) { // Down and right
+						sandCoords[0]++;
+						sandCoords[1]++;
+					} else { // Nowhere to go
+						status = SandStatus.RESTING;
+					}
+				}
+			}
+			if (status == SandStatus.RESTING) {
+				this.addRestingSand(sandCoords[0], sandCoords[1]);
+			}
+		}
+		
+		return status;
+	}
+	
 	public int part1() {
-		this.caveIn();
+		this.caveInUntilAbyss();
+		return this.sandCount;
+	}
+	
+	public int part2() {
+		this.caveInUntilBlocked();
 		return this.sandCount;
 	}
 	
@@ -118,6 +183,6 @@ public class Cave {
 	
 	
 	private enum SandStatus {
-		FALLING, RESTING, ABYSS;
+		FALLING, RESTING, ABYSS, BLOCKED;
 	}
 }
