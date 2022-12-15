@@ -58,15 +58,33 @@ public class ScanningField {
 		return this.scannedSpacesInRow(targetRow);
 	}
 	
-	public BigInteger part2(int maxRow) {
+	public BigInteger part2(int maxDimension) {
+		Range scanRange = new Range(0, maxDimension);
 		Coords solutionCoords = null;
 		
-		for (int y = 0; y <= maxRow && solutionCoords == null; y++) {
+		for (int y = 0; y <= maxDimension && solutionCoords == null; y++) {
+			/* This part was changed after I submitted my puzzle answers.
+			 * The original version worked for my specific puzzle input,
+			 * but I realized later it would NOT work for ALL inputs
+			 * (specifically if the correct spot was in the first or last
+			 * columns. This refit should work for all input, but I haven't
+			 * verified that.
+			 * 
+			 * It still assumes a single unscanned cell in the entire
+			 * search grid and, by extension, a single unscanned cell
+			 * in a given row.
+			 */
 			BrokenRow row = this.getScannedRow(y);
-			Range[] ranges = row.getRanges();
-			// This is WAY not generally applicable! Assumes a LOT about input conditions
-			if (ranges.length > 1) {
-				solutionCoords = new Coords(ranges[0].high() + 1, y);
+			if (!row.contains(scanRange)) {
+				// Find the first unscanned space within the scan range
+				Range[] ranges = row.getRanges();
+				int x = -1;
+				for (int i = 0; i < ranges.length && !scanRange.contains(x); i++) {
+					Range r = ranges[i];
+					x = scanRange.contains(r.low() - 1) ? r.low() - 1 : r.high() + 1;
+				}
+				
+				solutionCoords = new Coords(x, y);
 			}
 		}
 		

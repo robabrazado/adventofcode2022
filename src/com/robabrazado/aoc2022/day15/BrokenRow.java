@@ -67,11 +67,17 @@ public class BrokenRow {
 	}
 	
 	public boolean contains(int point) {
+		return this.contains(new Range(point, point));
+	}
+	
+	public boolean contains(Range range) {
 		boolean matched = false;
+		
 		Iterator<Range> it = this.ranges.iterator();
 		while (!matched && it.hasNext()) {
-			matched = it.next().contains(point);
+			matched = it.next().contains(range);
 		}
+		
 		return matched;
 	}
 	

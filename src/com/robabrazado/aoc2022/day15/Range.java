@@ -23,6 +23,11 @@ public class Range {
 		return point >= this.low && point <= this.high;
 	}
 	
+	// True if argument is contained by this range. Contrast with hasContainment(Range)
+	public boolean contains(Range other) {
+		return this.low <= other.low && this.high >= other.high;
+	}
+	
 	public boolean overlaps(Range other) {
 		return !this.disjointedWith(other);
 	}
@@ -31,9 +36,9 @@ public class Range {
 		return this.low > other.high || this.high < other.low;
 	}
 	
+	// True if this range contains argument OR argument contains this range. Contrast with contains(Range)
 	public boolean hasContainment(Range other) {
-		return (this.low >= other.low && this.high <= other.high) ||
-			(other.low >= this.low && other.high <= this.high);
+		return this.contains(other) || other.contains(this);
 	}
 	
 	public boolean adjacent(Range other) {
