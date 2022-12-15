@@ -50,6 +50,18 @@ public class BrokenRow {
 			}
 			// Add new uberrange back to set
 			this.ranges.add(newRange);
+			
+			// Merge adjacent ranges
+			List<Range> tmpRanges = new ArrayList<Range>(this.ranges);
+			Range prev = null;
+			for (Range curr : tmpRanges) {
+				if (prev != null && curr.adjacent(prev)) {
+					this.ranges.remove(prev);
+					this.ranges.remove(curr);
+					this.ranges.add(curr.union(prev));
+				}
+				prev = curr;
+			}
 		}
 		return;
 	}
@@ -72,4 +84,10 @@ public class BrokenRow {
 		
 		return count;
 	}
+	
+	// In order of lower bound
+	public Range[] getRanges() {
+		return (new ArrayList<Range>(this.ranges)).toArray(new Range[this.ranges.size()]);
+	}
+	
 }

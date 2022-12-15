@@ -1,5 +1,6 @@
 package com.robabrazado.aoc2022.day15;
 
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,7 +28,7 @@ public class ScanningField {
 		return;
 	}
 	
-	public int part1(int targetRow) {
+	public BrokenRow getScannedRow(int targetRow) {
 		// Count all scannable spaces in row
 		BrokenRow row = new BrokenRow();
 		for (Scanner scanner : scanners.values()) {
@@ -36,6 +37,12 @@ public class ScanningField {
 				row.addRange(r);
 			}
 		}
+		return row;
+	}
+	
+	public int scannedSpacesInRow(int targetRow) {
+		// Count all scannable spaces in row
+		BrokenRow row = this.getScannedRow(targetRow);
 		int scannedCount = row.count();
 		
 		// Account for spaces with scanners
@@ -45,6 +52,25 @@ public class ScanningField {
 		scannedCount -= countItemsInRow(this.beacons, targetRow);
 		
 		return scannedCount;
+	}
+	
+	public int part1(int targetRow) {
+		return this.scannedSpacesInRow(targetRow);
+	}
+	
+	public BigInteger part2(int maxRow) {
+		Coords solutionCoords = null;
+		
+		for (int y = 0; y <= maxRow && solutionCoords == null; y++) {
+			BrokenRow row = this.getScannedRow(y);
+			Range[] ranges = row.getRanges();
+			// This is WAY not generally applicable! Assumes a LOT about input conditions
+			if (ranges.length > 1) {
+				solutionCoords = new Coords(ranges[0].high() + 1, y);
+			}
+		}
+		
+		return BigInteger.valueOf(solutionCoords.x()).multiply(BigInteger.valueOf(4000000)).add(BigInteger.valueOf(solutionCoords.y()));
 	}
 	
 	private static int countItemsInRow(Collection<Coords> coords, int row) {

@@ -36,9 +36,13 @@ public class Range {
 			(other.low >= this.low && other.high <= this.high);
 	}
 	
+	public boolean adjacent(Range other) {
+		return this.high == other.low - 1 || this.low - 1 == other.high;
+	}
+	
 	public Range union(Range other) {
-		if (this.disjointedWith(other)) {
-			throw new IllegalArgumentException("Ranges are disjointed");
+		if (this.disjointedWith(other) && !this.adjacent(other)) {
+			throw new IllegalArgumentException("Ranges are disjointed or non-adjacent");
 		}
 		
 		return new Range(Integer.min(this.low, other.low), Integer.max(this.high, other.high));
@@ -63,5 +67,10 @@ public class Range {
 	@Override
 	public int hashCode() {
 		return Integer.valueOf(this.low).hashCode() ^ Integer.valueOf(this.high).hashCode();
+	}
+	
+	@Override
+	public String toString() {
+		return "[" + Integer.toString(this.low) + "," + Integer.toString(this.high)+ "]";
 	}
 }
