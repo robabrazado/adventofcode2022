@@ -1,6 +1,5 @@
 package com.robabrazado.aoc2022.day16;
 
-import java.math.BigInteger;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,7 +29,7 @@ public class Volcano {
 		return;
 	}
 	
-	public BigInteger part1(int eruptsIn) {
+	public int part1(int eruptsIn) {
 		// Gather a collection of all valves with positive flow rate
 		Set<Valve> valvesOfInterest = new HashSet<Valve>();
 		for (Valve v : this.allValves) {
@@ -39,28 +38,32 @@ public class Volcano {
 			}
 		}
 		
-		BigInteger maxPressure = BigInteger.ZERO;
+		int maxPressure = 0;
 		Iterator<Valve[]> it = new RouteGenerator(this.startValve, valvesOfInterest, eruptsIn);
 		while (it.hasNext()) {
 			Valve[] route = it.next();
-			BigInteger newPressure = getRoutePressure(this.startValve, route, eruptsIn);
-			maxPressure = maxPressure.max(newPressure);
+			int newPressure = getRoutePressure(this.startValve, route, eruptsIn);
+			maxPressure = Math.max(maxPressure, newPressure);
 		}
 		
 		return maxPressure;
 	}
 	
+	public BestRouteFinder routeFinder(int timeLimit, String startName) {
+		return new BestRouteFinder(Arrays.asList(this.allValves), timeLimit, startName);
+	}
+	
 	// Assumes opening each destination valve
-	private static BigInteger getRoutePressure(Valve start, Valve[] route, int maxMinutes) {
-		BigInteger pressure = BigInteger.ZERO;
+	private static int getRoutePressure(Valve start, Valve[] route, int maxMinutes) {
+		int pressure = 0;
 		int minutesLeft = maxMinutes;
 		Queue<Valve> routeQ = new ArrayDeque<Valve>(Arrays.asList(route));
 		Valve prev = start;
-		while (!routeQ.isEmpty() && minutesLeft > 0) {
+		while (!routeQ.isEmpty() && minutesLeft > 1) {
 			Valve curr = routeQ.poll();
 			minutesLeft -= prev.getDistance(curr) + 1;
 			if (minutesLeft >= 0) {
-				pressure = pressure.add(BigInteger.valueOf(minutesLeft).multiply(BigInteger.valueOf(curr.getFlowRate())));
+				pressure += minutesLeft * curr.getFlowRate();
 			}
 			prev = curr;
 		}

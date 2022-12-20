@@ -14,6 +14,10 @@ public abstract class Day16Cli {
 		System.out.println(volcano.part1(30));
 		System.out.println();
 		
+		System.out.println("Part 2");
+		BestRouteFinder brf = volcano.routeFinder(26,  "AA");
+		System.out.println(brf.part2());
+		
 		return;
 	}
 	
