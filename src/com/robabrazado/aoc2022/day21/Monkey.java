@@ -90,6 +90,6 @@ public class Monkey {
 	}
 	
 	public enum Type {
-		NUMBER, OPERATION;
+		NUMBER, OPERATION, ROOT, HUMAN;
 	}
 }
