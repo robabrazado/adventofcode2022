@@ -37,6 +37,14 @@ public class Field {
 		return this.getSmallestRectangleArea() - this.elves.size();
 	}
 	
+	public int part2() {
+		int round = 1;
+		while (this.diffuseRound() > 0) {
+			round++;
+		}
+		return round;
+	}
+	
 	// Returns number of elves that successfully moved
 	public int diffuseRound() {
 		Map<Position, List<Position>> proposedPositions = new HashMap<Position, List<Position>>();

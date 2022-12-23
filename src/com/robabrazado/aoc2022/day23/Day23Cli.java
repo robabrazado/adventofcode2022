@@ -15,6 +15,8 @@ public abstract class Day23Cli {
 		System.out.println();
 		
 		System.out.println("Part 2");
+		field = new Field(inputLines);
+		System.out.println(field.part2());
 
 		
 	}
