@@ -81,7 +81,7 @@ public class Line {
 					newPos = this.low;
 				} else {
 					// Wrap
-					newPos = this.getNewPositionDesc(this.high, len - (start - this.low) - 1);
+					newPos = this.getNewPositionDesc(this.high, len - (start - this.low) - 1);  
 				}
 			}
 		} else {

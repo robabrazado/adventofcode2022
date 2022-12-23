@@ -28,6 +28,7 @@ public class PathBoard {
 		
 		// Parse rows and cols
 		// NOTE: This model breaks HARD if there are non-contiguous rows or columns
+		// UDATE: Welp...based on the part 2 reveal, THAT wasn't going to be the problem. :P
 		int row = 1;
 		while (!inputQ.peek().isBlank()) {
 			String rowLine = inputQ.poll();
