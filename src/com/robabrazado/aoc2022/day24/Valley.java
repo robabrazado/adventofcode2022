@@ -120,12 +120,23 @@ public class Valley {
 	}
 	
 	public int part1() {
+		return this.timeToReachGoal(this.start, this.end);
+	}
+	
+	public int part2() {
+		int total = this.timeToReachGoal(this.start, this.end);
+		total += this.timeToReachGoal(this.end, this.start);
+		total += this.timeToReachGoal(this.start, this.end);
+		return total;
+	}
+	
+	private int timeToReachGoal(Location first, Location goal) {
 		Set<Location> expeditions = new HashSet<Location>();
-		boolean foundExit = false;
-		expeditions.add(start);
+		boolean reachedGoal = false;
+		expeditions.add(first);
 		int round = 0;
 		
-		while (!foundExit) {
+		while (!reachedGoal) {
 			round++;
 			this.advance();
 			Set<Location> newExpeditions = new HashSet<Location>();
@@ -134,8 +145,8 @@ public class Valley {
 					if (!walls.contains(candidate) && !blizzards.containsKey(candidate) &&
 							candidate.x() >= 0 && candidate.x() < xCount &&
 							candidate.y() >= 0 && candidate.y() < yCount) {
-						if (candidate == this.end) {
-							foundExit = true;
+						if (candidate == goal) {
+							reachedGoal = true;
 							break;
 						}
 						newExpeditions.add(candidate);

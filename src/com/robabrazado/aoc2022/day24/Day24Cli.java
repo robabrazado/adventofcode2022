@@ -15,6 +15,9 @@ public abstract class Day24Cli {
 		System.out.println(valley.part1());
 		System.out.println();
 		
+		System.out.println("Part 2");
+		valley = Valley.parseValley(inputLines);
+		System.out.println(valley.part2());
 
 		
 	}
